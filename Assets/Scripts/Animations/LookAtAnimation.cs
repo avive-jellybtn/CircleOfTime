@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class LookAt : MonoBehaviour {
+public class LookAtAnimation : MonoBehaviour {
 
     void Update() {
         Vector3 diff = PlayerController.instance.GetPlayerPos() - transform.position;

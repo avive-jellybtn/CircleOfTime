@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public static class BoundariesManager
+public static class BoundariesController
 {
     private static Vector3 _screenSize;
     private static float _screenWidth;
@@ -23,7 +23,7 @@ public static class BoundariesManager
         }
     }
 
-    static BoundariesManager()
+    static BoundariesController()
     {
         _screenSize = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0.0f));
         _screenWidth = _screenSize.x;

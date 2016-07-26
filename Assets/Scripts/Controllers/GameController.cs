@@ -2,11 +2,11 @@
 using System.Collections;
 using System;
 
-public class GameManager : MonoBehaviour
+public class GameController : MonoBehaviour
 {
-    [HideInInspector] public static GameManager instance;
+    [HideInInspector] public static GameController instance;
 
-    public enum GameState { Gameover, Game, Menu }
+    public enum GameState { Game, Menu }
 
     private GameState _currGameState;
     private int _currScore;
@@ -38,14 +38,14 @@ public class GameManager : MonoBehaviour
     private void SubscribeEvents()
     {
         PlayerController.OnCollision += DoRestart;
-        Enemy.OnEnemyDead += AddScore;
+        Enemy.OnEnemyDead += UpdateScore;
         Enemy.OnEnemyDead += UpdateNumOfEnemies;
     }
 
     private void UnsubscribeEvents()
     {
         PlayerController.OnCollision -= DoRestart;
-        Enemy.OnEnemyDead -= AddScore;
+        Enemy.OnEnemyDead -= UpdateScore;
         Enemy.OnEnemyDead -= UpdateNumOfEnemies;
     }
 
@@ -73,30 +73,28 @@ public class GameManager : MonoBehaviour
 
         EnemiesController.SpawnNextRound();
         _currEnemies = EnemiesController.GetCurrentNumberOfEnemies();
+        UpdateWaveNum();
 
         UIController.instance.UnshowMenu();
         UIController.instance.ShowGameUI();
         UIController.instance.UpdateNumOfEnemies(_currEnemies);
     }
 
-    public void DoGameOver()
-    {
-        _currGameState = GameState.Gameover;
-    }
-
     public void DoRestart()
     {
         _currScore = 0;
         _currEnemies = 0;
+        _currWaveNum = 0;
 
         EnemiesController.Reset();
         PlayerController.instance.ResetPlayer();
         PoolsManager.Instance.ResetPools();
+        UIController.instance.UnshowGameUI();
 
         DoMenu();
     }
 
-    private void AddScore()
+    private void UpdateScore()
     {
         _currScore++;
         UIController.instance.UpdateScore(_currScore);
@@ -108,12 +106,26 @@ public class GameManager : MonoBehaviour
 
         if (_currEnemies == 0)
         {
-            EnemiesController.SpawnNextRound();
-            _currEnemies = EnemiesController.GetCurrentNumberOfEnemies();
-            _currWaveNum++;
+            if (_currWaveNum == LevelsModel.HighestLevelIndex())
+            {
+                DoRestart();
+            }
+            else
+            {
+                EnemiesController.SpawnNextRound();
+                _currEnemies = EnemiesController.GetCurrentNumberOfEnemies();
+                UpdateWaveNum();
+            }
+      
         }
 
         UIController.instance.UpdateNumOfEnemies(_currEnemies);
+    }
+
+    private void UpdateWaveNum()
+    {
+        _currWaveNum++;
+        UIController.instance.UpdateWaveNum(_currWaveNum);
     }
 
     private void Update()
@@ -121,11 +133,6 @@ public class GameManager : MonoBehaviour
         if (_currGameState == GameState.Menu && Input.anyKeyDown)
         {
             DoStartGame();
-        }
-
-        if (_currGameState == GameState.Gameover && Input.anyKeyDown)
-        {
-            DoRestart();
         }
     }
 }

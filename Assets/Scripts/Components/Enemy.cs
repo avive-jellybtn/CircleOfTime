@@ -5,16 +5,11 @@ using DG.Tweening;
 
 public class Enemy : MonoBehaviour
 {
-    public enum EnemyType
-    {
-        Green,
-        Yellow,
-        Red,
-        Boss
-    }
+    public enum EnemyType { Green, Yellow, Red, Boss}
     public EnemyType enemyType;
 
     [SerializeField] private GameObject _enemy;
+    [SerializeField] private EnemyCollider _enemyCollider;
     [SerializeField] private SpriteRenderer _enemyOutlineRenderer;
 
     private float _minEnemySpeed;
@@ -29,6 +24,7 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         _startSize = _enemy.transform.localScale;
+        _enemyCollider.Init(this);
     }
 
     private void OnEnable()
@@ -37,23 +33,28 @@ public class Enemy : MonoBehaviour
         ShowEnemy();
     }
 
+    private void OnDisable()
+    {
+        _enemy.transform.localScale = Vector3.zero;
+    }
+
     private void SetEnemy()
     {
         switch (enemyType)
         {
             case EnemyType.Green:
-                _minEnemySpeed = -0.1f;
-                _enemySpeed = -0.5f;
+                _minEnemySpeed = 0.1f;
+                _enemySpeed = 0.5f;
                 _numberOfHits = 3;
                 break;
             case EnemyType.Red:
-                _minEnemySpeed = -0.2f;
-                _enemySpeed = -1.5f;
+                _minEnemySpeed = 0.2f;
+                _enemySpeed = 1.5f;
                 _numberOfHits = 1;
                 break;
             case EnemyType.Yellow:
-                _minEnemySpeed = -0.15f;
-                _enemySpeed = -1f;
+                _minEnemySpeed = 0.15f;
+                _enemySpeed = 1f;
                 _numberOfHits = 2;
                 break;
             case EnemyType.Boss:
@@ -108,23 +109,30 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator UpdateOutlineColor()
     {
-        if (!_canColorOutline)
-            yield return null;
+        if (_canColorOutline)
+        {
+            _canColorOutline = false;
 
-        _canColorOutline = false;
+            Color32 originalColor = _enemyOutlineRenderer.color;
+            _enemyOutlineRenderer.color = GameParameters.ENEMY_OUTLINE_HIT_COLOR;
 
-        Color32 originalColor = _enemyOutlineRenderer.color;
-        _enemyOutlineRenderer.color = new Color32(231, 76, 60,255);
+            yield return new WaitForSeconds(0.05f);
 
-        yield return new WaitForSeconds(0.05f);
-
-        _enemyOutlineRenderer.color = originalColor;
-        _canColorOutline = true;
+            _enemyOutlineRenderer.color = originalColor;
+            _canColorOutline = true;
+        }
     }
 
 
-    public void SetEnemyDistance(float d)
+    private void SetEnemyDistance(float d)
     {
         _enemy.transform.localPosition = new Vector3(0, d, 0);
+    }
+
+    public void InitEnemy(Vector3 pos, Quaternion rot, float dist)
+    {
+        transform.position = pos;
+        transform.localRotation = rot;
+        SetEnemyDistance(dist);
     }
 }

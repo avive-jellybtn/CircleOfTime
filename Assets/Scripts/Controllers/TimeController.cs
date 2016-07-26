@@ -30,7 +30,7 @@ public class TimeController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(GameParameters.UP_KEYCODE) || Input.GetKey(GameParameters.DOWN_KEYCODE))
         {
             if (_timeScale < 1)
             {

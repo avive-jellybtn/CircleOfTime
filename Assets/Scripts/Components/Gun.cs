@@ -3,12 +3,13 @@ using System.Collections;
 
 public class Gun : MonoBehaviour
 {
-
     [SerializeField] private Transform _gunTransform;
 
-    public void SetGunPosition(float angle)
+    public void SetGunPosition(Transform parent, float angle)
     {
-
+        transform.SetParent(parent);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
     public void ShootBullet()

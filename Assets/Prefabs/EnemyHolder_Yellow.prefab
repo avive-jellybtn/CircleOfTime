@@ -59,6 +59,7 @@ GameObject:
   - 212: {fileID: 21210940}
   - 58: {fileID: 5862648}
   - 50: {fileID: 5078460}
+  - 114: {fileID: 11480756}
   m_Layer: 9
   m_Name: Enemy_Yellow
   m_TagString: Untagged
@@ -424,6 +425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 1
   _enemy: {fileID: 132316}
+  _enemyCollider: {fileID: 11480756}
   _enemyOutlineRenderer: {fileID: 21248496}
 --- !u!114 &11443354
 MonoBehaviour:
@@ -467,6 +469,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be743d83be09e8f438c4d3b9eb4624ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11480756
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 132316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba9cca602152d44f9cd253dabef4d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &11498508

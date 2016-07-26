@@ -36,14 +36,6 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (OnCollision != null)
-        {
-            OnCollision();
-        }
-
-
-        // TODO - CHANGE THIS!
-        col.transform.parent.GetComponent<Enemy>().HitEnemy();
         gameObject.SetActive(false);
     }
 }

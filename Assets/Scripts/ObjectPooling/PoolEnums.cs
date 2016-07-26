@@ -5,5 +5,7 @@
     RedEnemy,
     Bullet,
     EnemyBullet,
-    BossEnemy
+    BossEnemy,
+    GunPowerup,
+    GunComponent
 }

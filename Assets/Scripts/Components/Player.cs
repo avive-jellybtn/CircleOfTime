@@ -7,22 +7,13 @@ public class Player : MonoBehaviour
 {
     public enum PlayerDirection { Up, Down }
     public event Action OnCollision;
+    public event Action<Powerup.PowerupType> OnCollectPowerup;
 
     private SpriteRenderer _spriteRenderer;
 
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    private void OnEnable()
-    {
-        OnCollision += PlayerController.DoOnCollision;
-    }
-
-    private void OnDisable()
-    {
-        OnCollision -= PlayerController.DoOnCollision;
     }
 
     public void ResetPlayer()
@@ -42,7 +33,7 @@ public class Player : MonoBehaviour
         {
             transform.position += transform.up * speed * Time.deltaTime;
         }
-        if (pd == PlayerDirection.Down)
+        else if (pd == PlayerDirection.Down)
         {
             transform.position -= transform.up * speed * Time.deltaTime;
         }
@@ -53,12 +44,15 @@ public class Player : MonoBehaviour
         int sign = 0;
 
         if (kc == KeyCode.LeftArrow)
+        {
             sign = 1;
-
-        if (kc == KeyCode.RightArrow)
+        }
+        else if (kc == KeyCode.RightArrow)
+        {
             sign = -1;
+        }
 
-        transform.Rotate(new Vector3(0, 0, sign * Time.deltaTime * 150));
+        transform.Rotate(new Vector3(0, 0, sign * Time.deltaTime * GameParameters.PLAYER_ROTATE_SPEED));
     }
 
     public void SetPlayerColor(Color32 color)
@@ -73,9 +67,26 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (OnCollision != null)
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameParameters.ENEMYBULLET_LAYER) || col.gameObject.layer == LayerMask.NameToLayer(GameParameters.ENEMY_LAYER))
         {
-            OnCollision();
+            if (OnCollision != null)
+            {
+                OnCollision();
+            }
         }
+
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameParameters.POWERUP_LAYER))
+        {
+            Powerup powerup = col.GetComponent<Powerup>();
+            if (powerup != null)
+            {
+                if (OnCollectPowerup != null)
+                {
+                    OnCollectPowerup(powerup.powerupType);
+                }
+            }
+        }
+
+        
     }
 }

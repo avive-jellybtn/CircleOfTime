@@ -5,7 +5,8 @@ using System.Collections;
 public class MusicEffect : MonoBehaviour
 {
     private AudioSource _audioSource;
-
+    [SerializeField] private float _minPitch;
+    [SerializeField] private float _maxPitch;
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -18,6 +19,6 @@ public class MusicEffect : MonoBehaviour
 
     private float GetAudioPitch()
     {
-        return Mathf.Lerp(GameParameters.MIN_MUSIC_PITCH, GameParameters.MAX_MUSIC_PITCH, TimeController.instance.TimeScale);
+        return Mathf.Lerp(_minPitch, _maxPitch, TimeController.instance.TimeScale);
     }
 }

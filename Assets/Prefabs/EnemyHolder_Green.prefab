@@ -76,6 +76,7 @@ GameObject:
   - 212: {fileID: 21282948}
   - 58: {fileID: 5895676}
   - 50: {fileID: 5074960}
+  - 114: {fileID: 11488956}
   m_Layer: 9
   m_Name: Enemy_Green
   m_TagString: Untagged
@@ -157,7 +158,7 @@ GameObject:
   - 4: {fileID: 410324}
   - 114: {fileID: 11413260}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -189,7 +190,7 @@ GameObject:
   - 4: {fileID: 464926}
   - 114: {fileID: 11441580}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -457,6 +458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 0
   _enemy: {fileID: 126780}
+  _enemyCollider: {fileID: 11488956}
   _enemyOutlineRenderer: {fileID: 21213192}
 --- !u!114 &11441580
 MonoBehaviour:
@@ -478,6 +480,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76bd4033fd0248c4aac5d95c126989f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11488956
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 126780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba9cca602152d44f9cd253dabef4d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!198 &19871272

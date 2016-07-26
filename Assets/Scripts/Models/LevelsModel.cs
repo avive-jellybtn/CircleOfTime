@@ -11,12 +11,14 @@ public static class LevelsModel {
         public int numOfYellowEnemies;
         public int numOfRedEnemies;
         public int numOfBossEnemies;
+        public bool spawnPowerup;
 
-        public Level(int numOfGreenEnemies, int numOfYellowEnemies, int numOfRedEnemies, int numOfBossEnemies) {
+        public Level(int numOfGreenEnemies, int numOfYellowEnemies, int numOfRedEnemies, int numOfBossEnemies, bool spawnPowerup) {
             this.numOfGreenEnemies = numOfGreenEnemies;
             this.numOfYellowEnemies = numOfYellowEnemies;
             this.numOfRedEnemies = numOfRedEnemies;
             this.numOfBossEnemies = numOfBossEnemies;
+            this.spawnPowerup = spawnPowerup;
         }
     }
 
@@ -28,10 +30,10 @@ public static class LevelsModel {
     
     private static void InitTrackModel() {
         sortedLevelsDict = new SortedDictionary<int, Level>();
-        sortedLevelsDict.Add(1, new Level(10, 0, 0, 0));
-        sortedLevelsDict.Add(2, new Level(7, 3,0, 0));
-        sortedLevelsDict.Add(3, new Level(5, 3,2, 0));
-        sortedLevelsDict.Add(4, new Level(2, 0, 0, 1));
+        sortedLevelsDict.Add(1, new Level(10, 0, 0, 0, false));
+        sortedLevelsDict.Add(2, new Level(7, 3,0, 0, true));
+        sortedLevelsDict.Add(3, new Level(5, 3,2, 0, true));
+        sortedLevelsDict.Add(4, new Level(2, 0, 0, 1, true));
     }
 
     public static Level GetLevel(int level) {

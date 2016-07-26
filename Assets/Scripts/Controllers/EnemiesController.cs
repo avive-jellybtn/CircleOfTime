@@ -29,13 +29,20 @@ public static class EnemiesController
         {
             for (int i = 0; i < numOfEnemies.Value; i++)
             {
-                GameObject tempEnemy = PoolsManager.Instance.GetPrefab(numOfEnemies.Key);
-                tempEnemy.transform.position = Vector3.zero;
-                tempEnemy.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, Random.Range(0, 360)));
-                tempEnemy.GetComponent<Enemy>().SetEnemyDistance(Random.Range(4f, 7f));
+                Enemy tempEnemy = PoolsManager.Instance.GetPrefab(numOfEnemies.Key).GetComponent<Enemy>();
+                if (tempEnemy != null)
+                {
+                    tempEnemy.InitEnemy(PlayerController.instance.GetPlayerPos(), Quaternion.Euler(new Vector3(0, 0, Random.Range(0, 360))), Random.Range(3f, 7f));
+                }
 
                 _currNumOfEnemies++;
             }
+        }
+
+        if (currLevel.spawnPowerup)
+        {
+            GameObject tempPowerup = PoolsManager.Instance.GetPrefab(PoolEnums.GunPowerup);
+            tempPowerup.transform.position = new Vector3(Random.Range(-BoundariesController.ScreenWidth, BoundariesController.ScreenWidth), Random.Range(-BoundariesController.ScreenHeight, BoundariesController.ScreenHeight), 0);
         }
     }
 

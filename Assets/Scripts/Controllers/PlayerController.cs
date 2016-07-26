@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class PlayerController : MonoBehaviour
@@ -9,8 +10,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _minSpeed;
     [SerializeField] private float _maxSpeed;
     [SerializeField] private Player _player;
-    [SerializeField] private Gun[] _guns;
+    [SerializeField] private Gun _mainGun;
+
+    private List<Gun> _gunsList = new List<Gun>();
     private bool _canShoot = true;
+    private int _currGunAngle;
+    private int _numOfGuns;
 
     public static event Action OnCollision;
 
@@ -24,8 +29,31 @@ public class PlayerController : MonoBehaviour
         instance = this;
     }
 
+    private void OnEnable()
+    {
+        SubscribeEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeEvents();
+    }
+
+    private void SubscribeEvents()
+    {
+        _player.OnCollectPowerup += DoOnCollectPowerup;
+        _player.OnCollision += DoOnCollision;
+    }
+
+    private void UnsubscribeEvents()
+    {
+        _player.OnCollectPowerup -= DoOnCollectPowerup;
+        _player.OnCollision -= DoOnCollision;
+    }
+
     public void ResetPlayer()
     {
+        RemoveGuns();
         _player.ResetPlayer();
     }
 
@@ -36,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.instance.GetGameState() != GameManager.GameState.Game)
+        if (GameController.instance.GetGameState() != GameController.GameState.Game)
             return;
 
         SetPlayerColor();
@@ -49,12 +77,12 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(GameParameters.UP_KEYCODE))
         {
             _player.UpdatePlayerMove(Player.PlayerDirection.Up, GetCurrentPlayerSpeed());
         }
 
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(GameParameters.DOWN_KEYCODE))
         {
             _player.UpdatePlayerMove(Player.PlayerDirection.Down, GetCurrentPlayerSpeed());
         }
@@ -62,11 +90,11 @@ public class PlayerController : MonoBehaviour
     }
     private void RoatatePlayer()
     {
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(GameParameters.LEFT_KEYCODE))
         {
             _player.UpdatePlayerRotation(KeyCode.LeftArrow);
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(GameParameters.RIGHT_KEYCODE))
         {
             _player.UpdatePlayerRotation(KeyCode.RightArrow);
         }
@@ -93,11 +121,13 @@ public class PlayerController : MonoBehaviour
         if (!_canShoot)
             return;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(GameParameters.SHOOT_KEYCODE))
         {
             _canShoot = false;
 
-            foreach (Gun gun in _guns)
+            _mainGun.ShootBullet();
+
+            foreach (Gun gun in _gunsList)
             {
                 gun.ShootBullet();
             }
@@ -114,17 +144,49 @@ public class PlayerController : MonoBehaviour
 
     private void BoundPlayerToScreen()
     {
-        float clampX = Mathf.Clamp(_player.transform.position.x, -BoundariesManager.ScreenWidth, BoundariesManager.ScreenWidth);
-        float clampY = Mathf.Clamp(_player.transform.position.y, -BoundariesManager.ScreenHeight, BoundariesManager.ScreenHeight);
+        float clampX = Mathf.Clamp(_player.transform.position.x, -BoundariesController.ScreenWidth, BoundariesController.ScreenWidth);
+        float clampY = Mathf.Clamp(_player.transform.position.y, -BoundariesController.ScreenHeight, BoundariesController.ScreenHeight);
         _player.SetPlayerPos(new Vector2(clampX, clampY));
     }
 
-    public static void DoOnCollision()
+    public void DoOnCollision()
     {
         if (OnCollision != null)
         {
             OnCollision();
         }
+    }
+
+    public void DoOnCollectPowerup(Powerup.PowerupType pt)
+    {
+        switch (pt)
+        {
+            case Powerup.PowerupType.Gun:
+                AddGun();
+                break;
+        }
+    }
+
+    private void AddGun()
+    {
+        if (_numOfGuns == 3)
+            return;
+
+        _numOfGuns++;
+        _currGunAngle += 90;
+        Gun gun = PoolsManager.Instance.GetPrefab(PoolEnums.GunComponent).GetComponent<Gun>();
+        gun.SetGunPosition(_player.transform, _currGunAngle);
+        _gunsList.Add(gun);
+     }
+
+    private void RemoveGuns()
+    {
+        foreach (Gun gun in _gunsList)
+        {
+            gun.gameObject.SetActive(false);
+        }
+
+        _gunsList.Clear();
     }
 }
 

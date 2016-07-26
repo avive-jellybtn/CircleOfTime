@@ -26,9 +26,9 @@ public class UIController : MonoBehaviour
 
     public void ResetUI()
     {
-        _waveText.text = "Wave \n1";
-        _enemiesText.text = "Enemies Left \n0";
-        _scoreText.text = "Score \n0";
+        _waveText.text = "Wave\n";
+        _enemiesText.text = "Enemies Left\n";
+        _scoreText.text = "Score\n0";
     }
 
 
@@ -62,6 +62,13 @@ public class UIController : MonoBehaviour
         FadeText(_enemiesText, 1, 0.5f, 1);
     }
 
+    public void UnshowGameUI()
+    {
+        FadeText(_scoreText, 0, 0.2f);
+        FadeText(_waveText, 0, 0.2f);
+        FadeText(_enemiesText, 0, 0.2f);
+    }
+ 
     public void UpdateScore(int score)
     {
         _scoreText.text = "Score \n" + score.ToString("N0");
@@ -70,6 +77,11 @@ public class UIController : MonoBehaviour
     public void UpdateNumOfEnemies(int numOfEnemies)
     {
         _enemiesText.text = "Enemies Left \n" + numOfEnemies.ToString("N0");
+    }
+
+    public void UpdateWaveNum(int waveNum)
+    {
+        _waveText.text = "Wave \n" + waveNum.ToString("N0");
     }
 
 }

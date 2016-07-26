@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 454990}
   - 114: {fileID: 11436350}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -122,7 +122,7 @@ GameObject:
   - 4: {fileID: 486258}
   - 114: {fileID: 11489790}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -318,6 +318,7 @@ GameObject:
   - 50: {fileID: 5006454}
   - 114: {fileID: 11492536}
   - 114: {fileID: 11419094}
+  - 114: {fileID: 11436184}
   m_Layer: 9
   m_Name: Enemy_Boss
   m_TagString: Untagged
@@ -539,7 +540,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 171348}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.6, z: 0}
+  m_LocalPosition: {x: 0, y: -1.5, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children:
   - {fileID: 428876}
@@ -806,6 +807,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be743d83be09e8f438c4d3b9eb4624ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11436184
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba9cca602152d44f9cd253dabef4d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11436350
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -899,6 +911,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 3
   _enemy: {fileID: 171348}
+  _enemyCollider: {fileID: 11436184}
   _enemyOutlineRenderer: {fileID: 21228386}
   _guns:
   - {fileID: 11470454}

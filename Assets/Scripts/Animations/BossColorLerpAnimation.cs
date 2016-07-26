@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 
 [RequireComponent (typeof(SpriteRenderer))]
-public class BossColorLerp : MonoBehaviour {
+public class BossColorLerpAnimation : MonoBehaviour {
 
     private List<Color32> _colorList;
     private int _currColorIndex;
