@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
 {
     [HideInInspector] public static PlayerController instance;
 
-    [SerializeField] private float _minSpeed;
     [SerializeField] private float _maxSpeed;
+    [SerializeField] private float _maxRotSpeed;
     [SerializeField] private Player _player;
     [SerializeField] private Gun _mainGun;
 
@@ -53,8 +53,10 @@ public class PlayerController : MonoBehaviour
 
     public void ResetPlayer()
     {
-        RemoveGuns();
+        ResetGuns();
         _player.ResetPlayer();
+
+        _canShoot = true;
     }
 
     public Vector3 GetPlayerPos()
@@ -79,12 +81,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(GameParameters.UP_KEYCODE))
         {
-            _player.UpdatePlayerMove(Player.PlayerDirection.Up, GetCurrentPlayerSpeed());
+            _player.UpdatePlayerMove(Player.PlayerDirection.Up, GetCurrentPlayerMovementSpeed());
         }
-
-        if (Input.GetKey(GameParameters.DOWN_KEYCODE))
+        else if (Input.GetKey(GameParameters.DOWN_KEYCODE))
         {
-            _player.UpdatePlayerMove(Player.PlayerDirection.Down, GetCurrentPlayerSpeed());
+            _player.UpdatePlayerMove(Player.PlayerDirection.Down, GetCurrentPlayerMovementSpeed());
         }
 
     }
@@ -92,11 +93,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(GameParameters.LEFT_KEYCODE))
         {
-            _player.UpdatePlayerRotation(KeyCode.LeftArrow);
+            _player.UpdatePlayerRotation(KeyCode.LeftArrow, GetCurrentPlayerRotationSpeed());
         }
-        if (Input.GetKey(GameParameters.RIGHT_KEYCODE))
+        else if (Input.GetKey(GameParameters.RIGHT_KEYCODE))
         {
-            _player.UpdatePlayerRotation(KeyCode.RightArrow);
+            _player.UpdatePlayerRotation(KeyCode.RightArrow, GetCurrentPlayerRotationSpeed());
         }
     }
 
@@ -105,10 +106,16 @@ public class PlayerController : MonoBehaviour
         _player.SetPlayerColor(GetCurrentPlayerColor());
     }
 
-    private float GetCurrentPlayerSpeed()
+    private float GetCurrentPlayerMovementSpeed()
     {
-        float currPlayerSpeed = Mathf.Lerp(_minSpeed, _maxSpeed, TimeController.instance.TimeScale);
+        float currPlayerSpeed = Mathf.Lerp(0, _maxSpeed, TimeController.instance.TimeScale);
         return currPlayerSpeed;
+    }
+
+    private float GetCurrentPlayerRotationSpeed()
+    {
+        float currRotSpeed = Mathf.Lerp(0, _maxRotSpeed, TimeController.instance.TimeScale);
+        return currRotSpeed;
     }
 
     public Color32 GetCurrentPlayerColor()
@@ -179,8 +186,11 @@ public class PlayerController : MonoBehaviour
         _gunsList.Add(gun);
      }
 
-    private void RemoveGuns()
+    private void ResetGuns()
     {
+        _numOfGuns = 0;
+        _currGunAngle = 0;
+
         foreach (Gun gun in _gunsList)
         {
             gun.gameObject.SetActive(false);

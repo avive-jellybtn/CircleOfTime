@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
-public class MusicEffect : MonoBehaviour
+public class PitchEffect : MonoBehaviour
 {
     private AudioSource _audioSource;
     [SerializeField] private float _minPitch;

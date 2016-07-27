@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using JellyJam.Events;
 
 public class GameController : MonoBehaviour
 {
     [HideInInspector] public static GameController instance;
 
-    public enum GameState { Game, Menu }
+    public enum GameState { Game, Menu, End }
 
     private GameState _currGameState;
     private int _currScore;
@@ -37,16 +38,18 @@ public class GameController : MonoBehaviour
 
     private void SubscribeEvents()
     {
-        PlayerController.OnCollision += DoRestart;
-        Enemy.OnEnemyDead += UpdateScore;
-        Enemy.OnEnemyDead += UpdateNumOfEnemies;
+        JellyEventController.SubscribeEvent(JellyEventType.GameEnd, EndGame);
+        JellyEventController.SubscribeEvent(JellyEventType.PlayerCollision, DoRestart);
+        JellyEventController.SubscribeEvent(JellyEventType.EnemyDead, UpdateScore);
+        JellyEventController.SubscribeEvent(JellyEventType.EnemyDead, UpdateNumOfEnemies);
     }
 
     private void UnsubscribeEvents()
     {
-        PlayerController.OnCollision -= DoRestart;
-        Enemy.OnEnemyDead -= UpdateScore;
-        Enemy.OnEnemyDead -= UpdateNumOfEnemies;
+        JellyEventController.UnsubscribeEvent(JellyEventType.GameEnd, EndGame);
+        JellyEventController.UnsubscribeEvent(JellyEventType.PlayerCollision, DoRestart);
+        JellyEventController.UnsubscribeEvent(JellyEventType.EnemyDead, UpdateScore);
+        JellyEventController.UnsubscribeEvent(JellyEventType.EnemyDead, UpdateNumOfEnemies);
     }
 
     private void Start()
@@ -59,7 +62,12 @@ public class GameController : MonoBehaviour
         return _currGameState;
     }
 
-    public void DoMenu()
+    private void EndGame()
+    {
+        _currGameState = GameState.End;
+    }
+
+    private void DoMenu()
     {
         _currGameState = GameState.Menu;
 
@@ -67,7 +75,7 @@ public class GameController : MonoBehaviour
         UIController.instance.ShowMenu();
     }
 
-    public void DoStartGame()
+    private void DoStartGame()
     {
         _currGameState = GameState.Game;
 
@@ -80,7 +88,7 @@ public class GameController : MonoBehaviour
         UIController.instance.UpdateNumOfEnemies(_currEnemies);
     }
 
-    public void DoRestart()
+    private void DoRestart()
     {
         _currScore = 0;
         _currEnemies = 0;
@@ -108,18 +116,24 @@ public class GameController : MonoBehaviour
         {
             if (_currWaveNum == LevelsModel.HighestLevelIndex())
             {
-                DoRestart();
+                UIController.instance.UnshowGameUI();
+                UIController.instance.ShowTheEnd();
             }
             else
             {
-                EnemiesController.SpawnNextRound();
-                _currEnemies = EnemiesController.GetCurrentNumberOfEnemies();
                 UpdateWaveNum();
+                UIController.instance.ShowNextWaveTransition(_currWaveNum, DoNextRound);
             }
-      
+
         }
 
         UIController.instance.UpdateNumOfEnemies(_currEnemies);
+    }
+
+    private void DoNextRound()
+    {
+        EnemiesController.SpawnNextRound();
+        _currEnemies = EnemiesController.GetCurrentNumberOfEnemies();
     }
 
     private void UpdateWaveNum()
@@ -133,6 +147,12 @@ public class GameController : MonoBehaviour
         if (_currGameState == GameState.Menu && Input.anyKeyDown)
         {
             DoStartGame();
+        }
+
+        if (_currGameState == GameState.End && Input.anyKeyDown)
+        {
+            UIController.instance.UnshowTheEnd();
+            DoRestart();
         }
     }
 }

@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void UpdatePlayerRotation(KeyCode kc)
+    public void UpdatePlayerRotation(KeyCode kc, float speed)
     {
         int sign = 0;
 
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
             sign = -1;
         }
 
-        transform.Rotate(new Vector3(0, 0, sign * Time.deltaTime * GameParameters.PLAYER_ROTATE_SPEED));
+        transform.Rotate(new Vector3(0, 0, sign * Time.deltaTime * speed));
     }
 
     public void SetPlayerColor(Color32 color)

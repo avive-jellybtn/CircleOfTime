@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class EnemyCollider : MonoBehaviour {
 
@@ -14,6 +15,8 @@ public class EnemyCollider : MonoBehaviour {
     {
         if (col.gameObject.layer == LayerMask.NameToLayer(GameParameters.BULLET_LAYER))
         {
+            transform.DOShakePosition(0.15f, 0.05f, 30, 0);
+
             if (m_enemy != null)
             {
                 m_enemy.HitEnemy();

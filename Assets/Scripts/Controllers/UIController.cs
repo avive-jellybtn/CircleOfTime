@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 public class UIController : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private Text _waveText;
     [SerializeField] private Text _enemiesText;
     [SerializeField] private Text _rememberText;
+    [SerializeField] private Text _nextWaveText;
+
+    [SerializeField] private GameObject _endAnimator;
 
     private void Awake()
     {
@@ -32,14 +36,28 @@ public class UIController : MonoBehaviour
     }
 
 
-    public void FadeText(Text t, float to, float time, float delay = 0.0f, bool pingPong = false)
+    public void FadeText(Text t, float to, float time, float delay = 0.0f, bool pingPong = false, Action callback = null)
     {
         if (pingPong)
             t.DOFade(to, time).SetEase(Ease.InOutQuad).SetLoops(-1, LoopType.Yoyo);
         else
-            t.DOFade(to, time).SetEase(Ease.OutQuad).SetDelay(delay);
+            t.DOFade(to, time).SetEase(Ease.OutQuad).SetDelay(delay).OnComplete(() =>
+            {
+                if (callback != null)
+                {
+                    callback();
+                }
+            }
+            );
     }
 
+
+    public void ShowNextWaveTransition(int waveNum, Action callback)
+    {
+        _nextWaveText.text = "Wave\n" + waveNum.ToString("N0");
+        FadeText(_nextWaveText, 1f, 0.5f);
+        FadeText(_nextWaveText, 0f, 0.5f, 1.5f, callback: callback );
+    }
 
     public void ShowMenu()
     {
@@ -68,7 +86,17 @@ public class UIController : MonoBehaviour
         FadeText(_waveText, 0, 0.2f);
         FadeText(_enemiesText, 0, 0.2f);
     }
- 
+
+    public void ShowTheEnd()
+    {
+        _endAnimator.SetActive(true);
+    }
+
+    public void UnshowTheEnd()
+    {
+        _endAnimator.SetActive(false);
+    }
+
     public void UpdateScore(int score)
     {
         _scoreText.text = "Score \n" + score.ToString("N0");

@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using DG.Tweening;
+using JellyJam.Events;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,8 +19,6 @@ public class Enemy : MonoBehaviour
     private int _currNumOfHits;
     private Vector3 _startSize;
     private bool _canColorOutline  = true;
-
-    public static event Action OnEnemyDead;
 
     private void Awake()
     {
@@ -48,13 +47,13 @@ public class Enemy : MonoBehaviour
                 _numberOfHits = 3;
                 break;
             case EnemyType.Red:
-                _minEnemySpeed = 0.2f;
-                _enemySpeed = 1.5f;
+                _minEnemySpeed = 0.5f;
+                _enemySpeed = 2f;
                 _numberOfHits = 1;
                 break;
             case EnemyType.Yellow:
-                _minEnemySpeed = 0.15f;
-                _enemySpeed = 1f;
+                _minEnemySpeed = 0.25f;
+                _enemySpeed = 1.5f;
                 _numberOfHits = 2;
                 break;
             case EnemyType.Boss:
@@ -100,10 +99,9 @@ public class Enemy : MonoBehaviour
         {
             UnshowEnemy();
 
-            if (OnEnemyDead != null)
-            {
-                OnEnemyDead();
-            }
+
+            Debug.LogError("HI");
+            JellyEventController.FireEvent(JellyEventType.EnemyDead);
         }
     }
 

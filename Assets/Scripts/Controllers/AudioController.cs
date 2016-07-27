@@ -1,28 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof(AudioSource))]
 public class AudioController : MonoBehaviour
 {
-    [HideInInspector] public static AudioController instance;
+    private static AudioController _instance;
+    public static AudioController instance
+    { get
+        {
+            return _instance;
+        }
+    }
 
-    public AudioClip powerupSE;
-
-    private AudioSource _audioSource;
+    private AudioSource _soundEffectsAudioSource;
 
     private void Awake()
     {
-        if (instance != null && instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
         }
 
-        instance = this;
-        _audioSource = GetComponent<AudioSource>();
+        _instance = this;
+
+        _soundEffectsAudioSource = gameObject.AddComponent<AudioSource>();
     }
 
-    public void PlayOneShot(AudioClip clip)
+    public void PlayOneShot(AudioClip clip, float volume = 1.0f)
     {
-        _audioSource.PlayOneShot(clip);
+        _soundEffectsAudioSource.PlayOneShot(clip, volume);
     }
 }

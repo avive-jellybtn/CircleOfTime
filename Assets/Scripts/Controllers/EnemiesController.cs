@@ -29,25 +29,34 @@ public static class EnemiesController
         {
             for (int i = 0; i < numOfEnemies.Value; i++)
             {
-                Enemy tempEnemy = PoolsManager.Instance.GetPrefab(numOfEnemies.Key).GetComponent<Enemy>();
-                if (tempEnemy != null)
-                {
-                    tempEnemy.InitEnemy(PlayerController.instance.GetPlayerPos(), Quaternion.Euler(new Vector3(0, 0, Random.Range(0, 360))), Random.Range(3f, 7f));
-                }
-
+                SpawnEnemy(numOfEnemies.Key);
                 _currNumOfEnemies++;
             }
         }
 
         if (currLevel.spawnPowerup)
         {
-            GameObject tempPowerup = PoolsManager.Instance.GetPrefab(PoolEnums.GunPowerup);
-            tempPowerup.transform.position = new Vector3(Random.Range(-BoundariesController.ScreenWidth, BoundariesController.ScreenWidth), Random.Range(-BoundariesController.ScreenHeight, BoundariesController.ScreenHeight), 0);
+            SpawnPowerup();
         }
     }
 
     public static int GetCurrentNumberOfEnemies()
     {
         return _currNumOfEnemies;
+    }
+
+    private static void SpawnEnemy(PoolEnums enemyEnum) 
+    {
+        Enemy tempEnemy = PoolsManager.Instance.GetPrefab(enemyEnum).GetComponent<Enemy>();
+        if (tempEnemy != null)
+        {
+            tempEnemy.InitEnemy(PlayerController.instance.GetPlayerPos(), Quaternion.Euler(new Vector3(0, 0, Random.Range(0, 360))), Random.Range(3f, 7f));
+        }
+    }
+
+    private static void SpawnPowerup()
+    {
+        GameObject tempPowerup = PoolsManager.Instance.GetPrefab(PoolEnums.GunPowerup);
+        tempPowerup.transform.position = new Vector3(Random.Range(-BoundariesController.ScreenWidth, BoundariesController.ScreenWidth), Random.Range(-BoundariesController.ScreenHeight, BoundariesController.ScreenHeight), 0);
     }
 }
