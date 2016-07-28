@@ -6,8 +6,6 @@ public class Bullet : MonoBehaviour
 {
     private Vector3 _dir;
 
-    public static event Action OnCollision;
-
     public void ShootBullet(Vector3 initPos, Vector3 dir)
     {
         SetInitPos(initPos);

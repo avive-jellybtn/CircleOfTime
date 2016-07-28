@@ -134,6 +134,7 @@ public class GameController : MonoBehaviour
     {
         EnemiesController.SpawnNextRound();
         _currEnemies = EnemiesController.GetCurrentNumberOfEnemies();
+        UIController.instance.UpdateNumOfEnemies(_currEnemies);
     }
 
     private void UpdateWaveNum()

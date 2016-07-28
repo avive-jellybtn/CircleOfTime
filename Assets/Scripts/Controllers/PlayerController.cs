@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using JellyJam.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,8 +16,6 @@ public class PlayerController : MonoBehaviour
     private bool _canShoot = true;
     private int _currGunAngle;
     private int _numOfGuns;
-
-    public static event Action OnCollision;
 
     private void Awake()
     {
@@ -41,14 +39,12 @@ public class PlayerController : MonoBehaviour
 
     private void SubscribeEvents()
     {
-        _player.OnCollectPowerup += DoOnCollectPowerup;
-        _player.OnCollision += DoOnCollision;
+        JellyEventController.SubscribeEvent(JellyEventType.CollectGun, AddGun);
     }
 
     private void UnsubscribeEvents()
     {
-        _player.OnCollectPowerup -= DoOnCollectPowerup;
-        _player.OnCollision -= DoOnCollision;
+        JellyEventController.UnsubscribeEvent(JellyEventType.CollectGun, AddGun);
     }
 
     public void ResetPlayer()
@@ -67,7 +63,9 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (GameController.instance.GetGameState() != GameController.GameState.Game)
+        {
             return;
+        }
 
         SetPlayerColor();
         MovePlayer();
@@ -128,7 +126,7 @@ public class PlayerController : MonoBehaviour
         if (!_canShoot)
             return;
 
-        if (Input.GetKeyDown(GameParameters.SHOOT_KEYCODE))
+        if (Input.GetKey(GameParameters.SHOOT_KEYCODE))
         {
             _canShoot = false;
 
@@ -154,24 +152,6 @@ public class PlayerController : MonoBehaviour
         float clampX = Mathf.Clamp(_player.transform.position.x, -BoundariesController.ScreenWidth, BoundariesController.ScreenWidth);
         float clampY = Mathf.Clamp(_player.transform.position.y, -BoundariesController.ScreenHeight, BoundariesController.ScreenHeight);
         _player.SetPlayerPos(new Vector2(clampX, clampY));
-    }
-
-    public void DoOnCollision()
-    {
-        if (OnCollision != null)
-        {
-            OnCollision();
-        }
-    }
-
-    public void DoOnCollectPowerup(Powerup.PowerupType pt)
-    {
-        switch (pt)
-        {
-            case Powerup.PowerupType.Gun:
-                AddGun();
-                break;
-        }
     }
 
     private void AddGun()

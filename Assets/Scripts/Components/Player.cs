@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
+using JellyJam.Events;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Player : MonoBehaviour
 {
     public enum PlayerDirection { Up, Down }
-    public event Action OnCollision;
-    public event Action<Powerup.PowerupType> OnCollectPowerup;
 
     private SpriteRenderer _spriteRenderer;
 
@@ -69,24 +67,12 @@ public class Player : MonoBehaviour
     {
         if (col.gameObject.layer == LayerMask.NameToLayer(GameParameters.ENEMYBULLET_LAYER) || col.gameObject.layer == LayerMask.NameToLayer(GameParameters.ENEMY_LAYER))
         {
-            if (OnCollision != null)
-            {
-                OnCollision();
-            }
+            JellyEventController.FireEvent(JellyEventType.PlayerCollision);
         }
 
         if (col.gameObject.layer == LayerMask.NameToLayer(GameParameters.POWERUP_LAYER))
         {
-            Powerup powerup = col.GetComponent<Powerup>();
-            if (powerup != null)
-            {
-                if (OnCollectPowerup != null)
-                {
-                    OnCollectPowerup(powerup.powerupType);
-                }
-            }
+            JellyEventController.FireEvent(JellyEventType.CollectGun);
         }
-
-        
     }
 }

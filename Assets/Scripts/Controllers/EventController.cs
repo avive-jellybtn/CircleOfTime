@@ -1,14 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Linq;
 
 namespace JellyJam.Events
 {
     public enum JellyEventType
     {
-        CollectPowerup,
+        CollectGun,
         GameEnd,
         GameOver,
         EnemyDead,
@@ -30,14 +28,11 @@ namespace JellyJam.Events
 
         public static void FireEvent(JellyEventType eventType)
         {
-            foreach (var item in _eventsDict)
+            if (_eventsDict.ContainsKey(eventType))
             {
-               if (item.Key == eventType)
+                for (int i = _eventsDict[eventType].Count - 1; i >= 0; i--)
                 {
-                    foreach (var e in item.Value)
-                    {
-                        e();
-                    }
+                    _eventsDict[eventType][i]();
                 }
             }
         }
@@ -47,40 +42,23 @@ namespace JellyJam.Events
             if (_eventsDict.ContainsKey(eventType))
             {
                 _eventsDict[eventType].Add(callback);
-
             }
         }
 
         public static void UnsubscribeEvent(JellyEventType eventType, Action callback)
         {
-            Action eventToRemove = null;
-
-            foreach (var item in _eventsDict)
+            if (!_eventsDict.ContainsKey(eventType))
             {
-                if (_eventsDict.ContainsKey(eventType))
-                {
-                    foreach (var e in item.Value)
-                    {
-                        if (e == callback)
-                        {
-                            eventToRemove = e;
-                        }
-                    }
-                }
+                return;
             }
-
-            if (eventToRemove != null)
-            {
-                Action a = () =>
-                {
-                    var events = _eventsDict[eventType];
-                    events.Remove(eventToRemove);
-                    _eventsDict[eventType] = events;
-                };
-
-                CoroutineController.instance.ExecuteOnEndOfFrame(a);
-            }
+            _eventsDict[eventType].Remove(callback);
+            //for (int i = _eventsDict[eventType].Count - 1; i >= 0; i--)
+            //{
+            //    if (_eventsDict[eventType][i] == callback)
+            //    {
+            //        _eventsDict[eventType].RemoveAt(i);
+            //    }
+            //}
         }
     }
 }
-

@@ -15,23 +15,19 @@ public class Powerup : MonoBehaviour {
         _audioSource = GetComponent<AudioSource>();
     }
 
+    public void InitPowerup(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
     private void OnEnable()
     {
-        JellyEventController.SubscribeEvent(JellyEventType.CollectPowerup, CollectPowerup);
+        JellyEventController.SubscribeEvent(JellyEventType.CollectGun, CollectPowerup);
     }
 
     private void OnDisable()
     {
-        JellyEventController.UnsubscribeEvent(JellyEventType.CollectPowerup, CollectPowerup);
-    }
-
-
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.gameObject.layer == LayerMask.NameToLayer(GameParameters.PLAYER_LAYER))
-        {
-            JellyEventController.FireEvent(JellyEventType.CollectPowerup);
-        }
+        JellyEventController.UnsubscribeEvent(JellyEventType.CollectGun, CollectPowerup);
     }
 
     private void CollectPowerup()

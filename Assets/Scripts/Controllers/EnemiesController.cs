@@ -7,6 +7,14 @@ public static class EnemiesController
     private static int _currLevelIndex;
     private static int _currNumOfEnemies;
 
+    public static int CurrentNumberOfEnemies
+    {
+        get
+        {
+            return _currNumOfEnemies;
+        }
+    }
+
     public static void Reset()
     {
         _currLevelIndex = 0;
@@ -34,9 +42,9 @@ public static class EnemiesController
             }
         }
 
-        if (currLevel.spawnPowerup)
+        if (currLevel.spawnGun)
         {
-            SpawnPowerup();
+            SpawnGunPowerup();
         }
     }
 
@@ -54,9 +62,13 @@ public static class EnemiesController
         }
     }
 
-    private static void SpawnPowerup()
+    private static void SpawnGunPowerup()
     {
-        GameObject tempPowerup = PoolsManager.Instance.GetPrefab(PoolEnums.GunPowerup);
-        tempPowerup.transform.position = new Vector3(Random.Range(-BoundariesController.ScreenWidth, BoundariesController.ScreenWidth), Random.Range(-BoundariesController.ScreenHeight, BoundariesController.ScreenHeight), 0);
+        Powerup tempPowerup = PoolsManager.Instance.GetPrefab(PoolEnums.GunPowerup).GetComponent<Powerup>();
+        if (tempPowerup != null)
+        {
+            Vector3 powerupPos = new Vector3(Random.Range(-BoundariesController.ScreenWidth, BoundariesController.ScreenWidth), Random.Range(-BoundariesController.ScreenHeight, BoundariesController.ScreenHeight), 0);
+            tempPowerup.InitPowerup(powerupPos);
+        }
     }
 }

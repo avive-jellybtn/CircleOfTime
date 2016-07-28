@@ -92,15 +92,11 @@ public class Enemy : MonoBehaviour
     public void HitEnemy()
     {
         _currNumOfHits++;
-
         StartCoroutine(UpdateOutlineColor());
 
         if (_currNumOfHits == _numberOfHits)
         {
             UnshowEnemy();
-
-
-            Debug.LogError("HI");
             JellyEventController.FireEvent(JellyEventType.EnemyDead);
         }
     }
